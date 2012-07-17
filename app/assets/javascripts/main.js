@@ -2,6 +2,7 @@ var map;
 var directionsService;
 var placesService;
 var markers;
+var geocoder;
 		
 function initialize() {
   	var sanFrancisco = new google.maps.LatLng(37.7750, -122.4183);
@@ -14,6 +15,19 @@ function initialize() {
 	directionsService = new google.maps.DirectionsService();
 	placesService = new google.maps.places.PlacesService(map);
 	markers = [];
+	geocoder = new google.maps.Geocoder();
+}
+
+function centerMap(start) {
+	var geocoderRequest = {
+		address: start
+	}
+	
+	geocoder.geocode(geocoderRequest, function(results, status) {
+		if (status == google.maps.GeocoderStatus.OK) {
+			map.setCenter(results[0].geometry.location);
+		}
+	});
 }
 
 function showPOIs() {
@@ -26,7 +40,9 @@ function showPOIs() {
 	var poi = document.getElementById("poi").value;
 	var walk = document.getElementById("walk").value;
 	var searchPoints = [];
-	  			
+	
+	centerMap(start);
+	
 	var routeRequest = {
 		origin: start,
 		destination: end,
