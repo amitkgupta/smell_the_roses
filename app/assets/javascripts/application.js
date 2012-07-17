@@ -13,4 +13,5 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require /vendor/assets/javascripts/bootstrap/bootstrap-tooltip.js
 //= require_tree .
