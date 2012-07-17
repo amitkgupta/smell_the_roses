@@ -1,1 +1,11 @@
-hello world
+.left-panel
+  %strong Start:
+  %input#start
+  %strong End:
+  %input#end
+  %strong Point of Interest:
+  %input#poi
+  %strong Max Walking Distance (in m):
+  %input#walk
+  %button{:onclick => "showPOIs();"} Go!
+#map_canvas
