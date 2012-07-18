@@ -5,7 +5,13 @@
   %input#end
   %strong Point of Interest:
   %input#poi
-  %strong Max Walking Distance (in m):
-  %input#walk
+  %strong Max Deviation (in m):
+  %input#deviation
+  %strong Transit Mode:
+  %select#travelMode
+    %option{:value => "WALKING"} Walking
+    %option{:value => "BICYCLING"} Bicycling
+    %option{:value => "TRANSIT"} Transit
+    %option{:value => "DRIVING"} Driving
   %button{:onclick => "showPOIs();"} Go!
 #map_canvas
