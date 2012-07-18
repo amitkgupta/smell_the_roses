@@ -1,1 +1,1 @@
-[Current Iteration as of 7/18/12](warm-sunrise-5625.herokuapp.com)
+[Current Iteration as of 7/18/12](http://warm-sunrise-5625.herokuapp.com)
