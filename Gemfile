@@ -2,9 +2,13 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.6'
 
-group :development, :test do
-  gem 'sqlite3', '1.3.5'
+group :development do
+#  gem 'sqlite3', '1.3.5'
+end
+
+group :test do
   gem 'rspec-rails'
+  gem 'jasmine'
 end
 
 group :production do
