@@ -116,7 +116,7 @@ function addMarker(location, name, rating) {
 	});
 	markers.push(marker);
 	markerPositions.push(location);
-	if (routeRequest.travelMode != "TRANSIT") { addListenerToMarker(marker); }
+	if (travelMode != "TRANSIT") { addListenerToMarker(marker); }
 }
 
 function addListenerToMarker(marker) {
