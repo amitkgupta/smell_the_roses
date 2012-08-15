@@ -2,6 +2,7 @@ var map;
 var directionsService;
 var placesService;
 var markers;
+var markerPositions;
 var geocoder;
 var directionsRenderer;
 var routeRequest;
@@ -17,6 +18,7 @@ function initialize() {
 	directionsService = new google.maps.DirectionsService();
 	placesService = new google.maps.places.PlacesService(map);
 	markers = [];
+	markerPositions = [];
 	geocoder = new google.maps.Geocoder();
 	directionsRenderer = new google.maps.DirectionsRenderer({map: map});
 }
@@ -26,6 +28,7 @@ function resetMarkers() {
 		marker.setMap(null);
 	});
 	markers = [];
+	markerPositions = [];
 }
 
 function resetMap(bounds, deviation) {
@@ -48,7 +51,6 @@ function showPOIs() {
 	var poi = document.getElementById("poi").value;
 	var deviation = document.getElementById("deviation").value;
 	var travelMode = document.getElementById("travelMode").value;
-	var searchPoints = [];
 	
 	routeRequest = {
 		origin: start,
@@ -57,22 +59,20 @@ function showPOIs() {
 	}
 	  			
 	directionsService.route(routeRequest, function(routeResults, status) {
-		if(status == google.maps.DirectionsStatus.OK) {
-			directionsRenderer.setDirections(routeResults);
+// 		if(status == google.maps.DirectionsStatus.OK) {
+		directionsRenderer.setDirections(routeResults);
 		
-			var steps = routeResults.routes[0]['legs'][0]['steps'];
-			var bounds = new google.maps.LatLngBounds();
-			bounds.extend(steps[0].start_location);
-			bounds.extend(steps[steps.length-1].end_location);
-			
-			resetMap(bounds, deviation);
+		var steps = routeResults.routes[0]['legs'][0]['steps'];
 
-			searchPoints = buildSearchPoints(steps);
-				
-			searchPoints.forEach(function(point) {
-				addMarkersNearPoint(point, deviation, poi);
-			});
-		}
+		var bounds = new google.maps.LatLngBounds();
+		bounds.extend(steps[0].start_location);
+		bounds.extend(steps[steps.length-1].end_location);			
+		resetMap(bounds, deviation);
+
+		buildSearchPoints(steps).forEach(function(point) {
+			addMarkersNearPoint(point, deviation, poi);
+		});
+// 		}
 	});
 }
 
@@ -101,32 +101,36 @@ function addMarkersNearPoint(point, deviation, poi) {
 	}
 							
 	placesService.search(searchRequest, function(searchResults, status) {
-		if (status == google.maps.places.PlacesServiceStatus.OK) {
-			searchResults.forEach(function(result) {
-				addMarker(result);
-			});
-		}
+// 		if (status == google.maps.places.PlacesServiceStatus.OK) {
+		searchResults.forEach(function(result) {
+			if ($.inArray("result.geometry.location", markerPositions) == -1) {
+				addMarker(result.geometry.location, result.name, result.rating);
+			}
+		});
+// 		}
 	});
 }
 
-function addMarker(place) {
-	var positions = markers.map(function(marker) {marker.position;});
-	if ($.inArray("place.geometry.location", positions) == -1) {
-		var marker = new google.maps.Marker({
-			map: map,
-			position: place.geometry.location,
-			title: place.name.concat(" (rating: ").concat(place.rating).concat(")")
-		});
+function addMarker(location, name, rating) {
+	var marker = new google.maps.Marker({
+		map: map,
+		position: location,
+		title: name.concat(" (rating: ").concat(rating).concat(")")
+	});
 
-		markers.push(marker);
+	markers.push(marker);
+	markerPositions.push(location);
 		
-		google.maps.event.addListener(marker, 'click', function() {
-   			routeRequest.waypoints = [{location: marker.position}]
-   			directionsService.route(routeRequest, function(routeResults, status) {
-				if(status == google.maps.DirectionsStatus.OK) {
-					directionsRenderer.setDirections(routeResults);
-				}
-			});
+	if (routeRequest.travelMode != "TRANSIT") { addListenerToMarker(marker); }
+}
+
+function addListenerToMarker(marker) {
+	google.maps.event.addListener(marker, 'click', function() {
+		routeRequest.waypoints = [{location: marker.getPosition()}]
+		directionsService.route(routeRequest, function(routeResults, status) {
+// 			if(status == google.maps.DirectionsStatus.OK) {
+			directionsRenderer.setDirections(routeResults);
+// 			}
 		});
-	}
+	});
 }
