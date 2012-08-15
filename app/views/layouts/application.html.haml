@@ -3,7 +3,7 @@
   %head
     %title SmellTheRoses
     = stylesheet_link_tag "application"
-    = javascript_include_tag "http://maps.googleapis.com/maps/api/js?key=AIzaSyDy_gkvsFaLXV0w15NxbclWte5S5EkE-2Q\&sensor=false\&libraries=geometry,places"
+    = javascript_include_tag "http://maps.googleapis.com/maps/api/js?sensor=false\&libraries=geometry,places"
     = javascript_include_tag "application"
     = csrf_meta_tags
   %body{:onload => "initialize();"}
