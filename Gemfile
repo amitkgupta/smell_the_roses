@@ -25,4 +25,4 @@ group :assets do
 end
 
 gem 'haml-rails'
-gem 'jquery-rails', '2.0.0'
+gem 'jquery-rails'
